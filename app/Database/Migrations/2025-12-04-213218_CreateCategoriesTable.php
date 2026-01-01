@@ -23,16 +23,25 @@ class CreateCategoriesTable extends Migration
             'explication' => [
                 'type' => 'TEXT',
             ],
+            'parent_id' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true,
+                'null' => true,
+            ],
             'created_at' => [
                 'type' => 'TIMESTAMP',
                 'null' => true,
             ],
         ]);
         
-            $this->forge->addKey('id_categorie', true);
-
-            $this->forge->createTable('categories', true);
+        $this->forge->addKey('id_categorie', true);
+        
+        $this->forge->addForeignKey('parent_id', 'categories', 'id_categorie', 'CASCADE', 'CASCADE');
+        
+        $this->forge->createTable('categories', true);
     }
+    
     public function down()
     {
         $this->forge->dropTable('categories');
