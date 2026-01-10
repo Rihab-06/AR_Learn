@@ -54,7 +54,7 @@ class AuthController extends BaseController
                         ->withInput()
                         ->with('errors', $this->validator->getErrors());
         } 
-        echo "Validation passed";
+        
         $data = [    
             //dataBase fields = .....->getPost('form field name(aka input name )')
             'nom' => $this->request->getPost('nom'),

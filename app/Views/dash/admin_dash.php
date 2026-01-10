@@ -45,51 +45,141 @@
             border: 1px solid rgba(143, 171, 212, 0.15); /* Bordure fine */
         }
 
-        /* Section logo avec icône et texte */
+        /* Section logo avec container arrondi et fond subtil */
         .logo-section {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
+            padding: 8px 20px;
+            background: rgba(143, 171, 212, 0.12);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
 
-        .logo-icon {
-            font-size: 28px;
+        .logo-section:hover {
+            background: rgba(143, 171, 212, 0.18);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(143, 171, 212, 0.2);
         }
 
+        /* Image du logo avec zoom et effet de lueur */
+        .logo-img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+            transform: scale(2.7); /* Agrandit l'image */
+            filter: drop-shadow(0 0 12px rgba(143, 171, 212, 0.6));
+            transition: filter 0.3s;
+        }
+
+        .logo-section:hover .logo-img {
+            filter: drop-shadow(0 0 18px rgba(143, 171, 212, 0.9));
+        }
+
+        /* Texte du logo avec gradient animé */
         .logo-text {
-            font-size: 22px;
+            font-size: 26px;
             font-weight: 700;
-            color: #EFECE3;
-            letter-spacing: 1.5px;
+            letter-spacing: 2.5px;
+            background: linear-gradient(135deg, #8FABD4, #EFECE3, #8FABD4);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 3s ease infinite;
         }
 
-        /* Titre de bienvenue */
-        .header h1 {
-            color: #EFECE3;
-            font-size: 20px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        /* Animation du gradient du texte logo */
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 100% center; }
         }
 
-        /* Bouton de déconnexion avec dégradé rouge */
-        .logout-btn {
+        /* ========== MENU DÉROULANT UTILISATEUR (NOUVEAU) ========== */
+        /* Container du menu utilisateur avec position relative */
+        .user-menu {
+            position: relative;
+        }
+
+        /* Bouton principal du menu avec icône utilisateur */
+        .menu-toggle {
             background: linear-gradient(to right, #0a0f47ff, #6263b7ff);
             color: white;
-            padding: 10px 20px;
+            padding: 10px 18px;
             border: none;
-            border-radius: 8px; /* Coins légèrement arrondis */
+            border-radius: 8px;
             cursor: pointer;
-            text-decoration: none;
             font-size: 14px;
             font-weight: 500;
-            transition: all 0.3s; /* Animation fluide */
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .logout-btn:hover {
+        .menu-toggle:hover {
             background: linear-gradient(to right, #6263b7ff, #0a0f47ff);
-            transform: translateY(-1px); /* Légère élévation au hover */
+            transform: translateY(-1px);
+        }
+
+        /* Icône utilisateur dans le bouton */
+        .user-icon {
+            font-size: 18px;
+        }
+
+        /* Menu déroulant caché par défaut */
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: rgba(26, 26, 46, 0.95);
+            border: 1px solid rgba(143, 171, 212, 0.3);
+            border-radius: 10px;
+            min-width: 200px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        /* Affichage du menu au hover sur le container */
+        .user-menu:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Items individuels du menu déroulant */
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            color: #EFECE3;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+            border-bottom: 1px solid rgba(143, 171, 212, 0.1);
+        }
+
+        /* Dernier item sans bordure inférieure */
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Effet hover sur les items avec décalage gauche */
+        .dropdown-item:hover {
+            background: rgba(74, 112, 169, 0.2);
+            padding-left: 25px;
+        }
+
+        /* Icônes des items du menu */
+        .dropdown-item span {
+            font-size: 16px;
         }
 
         /* ========== SECTION STATISTIQUES ========== */
@@ -201,7 +291,7 @@
             line-height: 1.5;
         }
 
-        /* ========== SECTION GLOW EFFECT ========== */
+        /* ========== EFFET DE LUEUR DÉCORATIF ========== */
         /* Effet de lueur décoratif en arrière-plan */
         .glow-effect {
             position: fixed;
@@ -248,10 +338,6 @@
                 margin-bottom: 10px;
             }
 
-            .header h1 {
-                font-size: 18px;
-            }
-
             .stats {
                 grid-template-columns: 1fr; /* Une colonne sur mobile */
                 gap: 20px;
@@ -272,6 +358,17 @@
 
             .action-btn {
                 padding: 30px 20px;
+            }
+
+            /* Menu déroulant centré sur mobile */
+            .dropdown-menu {
+                right: auto;
+                left: 50%;
+                transform: translateX(-50%) translateY(-10px);
+            }
+
+            .user-menu:hover .dropdown-menu {
+                transform: translateX(-50%) translateY(0);
             }
         }
 
@@ -329,13 +426,29 @@
         <div class="header">
             <!-- Logo et nom de l'application -->
             <div class="logo-section">
-                <span class="logo-icon">📚</span>
+                <img src="<?= base_url('assets/images/logo-app.png') ?>" 
+                     alt="AR_Learn Logo" 
+                     class="logo-img">
                 <span class="logo-text">AR_Learn</span>
             </div>
 
-    
-            <!-- Bouton de déconnexion pointant vers la route logout -->
-            <a href="<?= base_url('admin_logout') ?>" class="logout-btn">Déconnexion</a>
+            <!-- NOUVEAU: Menu déroulant utilisateur -->
+            <div class="user-menu">
+                <button class="menu-toggle">
+                    <span class="user-icon">👤</span>
+                    Menu
+                </button>
+                <div class="dropdown-menu">
+                    <a href="<?= base_url('/admin/settings') ?>" class="dropdown-item">
+                        <span>⚙️</span>
+                        Paramètres
+                    </a>
+                    <a href="<?= base_url('/admin_logout') ?>" class="dropdown-item">
+                        <span>🚪</span>
+                        Déconnexion
+                    </a>
+                </div>
+            </div>
         </div>
 
         <!-- ========== STATISTIQUES ========== -->
@@ -367,21 +480,21 @@
         <!-- Grille des actions administratives disponibles -->
         <div class="actions">
             <!-- Bouton : Gestion des utilisateurs -->
-            <a href="<?= base_url('admin/users') ?>" class="action-btn">
+            <a href="<?= base_url('/admin/users') ?>" class="action-btn">
                 <span class="icon">👥</span>
                 <h2>Gérer les Utilisateurs</h2>
                 <p>Consulter, modifier et supprimer les comptes utilisateurs</p>
             </a>
 
             <!-- Bouton : Gestion des catégories -->
-            <a href="<?= base_url('admin/categories') ?>" class="action-btn">
+            <a href="<?= base_url('/admin/categories') ?>" class="action-btn">
                 <span class="icon">📁</span>
                 <h2>Gérer les Catégories</h2>
                 <p>Créer, organiser et supprimer les catégories de quiz</p>
             </a>
 
             <!-- Bouton : Gestion des tests -->
-            <a href="<?= base_url('admin/tests') ?>" class="action-btn">
+            <a href="<?= base_url('/admin/tests') ?>" class="action-btn">
                 <span class="icon">📝</span>
                 <h2>Gérer les Tests</h2>
                 <p>Réviser, valider et supprimer les tests créés</p>

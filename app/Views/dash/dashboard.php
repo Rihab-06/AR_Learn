@@ -70,14 +70,18 @@
             box-shadow: 0 5px 20px rgba(143, 171, 212, 0.2);
         }
 
-        .logo-img {
+         .logo-img {
             width: 45px;
             height: 45px;
             object-fit: contain;
+            /* agrandit l'image */
+            transform: scale(2.7);
+            
             
             /* Effet de lueur autour du logo */
             filter: drop-shadow(0 0 12px rgba(143, 171, 212, 0.6));
             transition: filter 0.3s;
+
         }
 
         .logo-section:hover .logo-img {
