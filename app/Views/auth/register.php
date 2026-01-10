@@ -136,9 +136,25 @@
             margin-bottom: 55px;
         }
 
-        .logo-icon {
-            font-size: 42px;
+        
+.logo-img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+            /* agrandit l'image */
+            transform: scale(2.7);
+            
+            
+            /* Effet de lueur autour du logo */
+            filter: drop-shadow(0 0 12px rgba(143, 171, 212, 0.6));
+            transition: filter 0.3s;
+
         }
+
+        .logo-section:hover .logo-img {
+            filter: drop-shadow(0 0 18px rgba(143, 171, 212, 0.9));
+        }
+
 
         .logo-text {
             font-size: 28px;
@@ -541,10 +557,13 @@
 
             <!-- Content -->
             <div class="left-content">
-                <div class="logo-section">
-                    <span class="logo-icon">📚</span>
-                    <span class="logo-text">AR_Learn</span>
-                </div>
+                <!-- Logo et nom de l'application -->
+            <div class="logo-section">
+                <img src="<?= base_url('assets/images/logo-app.png') ?>" 
+                 alt="AR_Learn Logo" 
+                 class="logo-img">
+            <span class="logo-text">AR_Learn</span>
+            </div>
 
                 <div class="tagline">COMMENCEZ VOTRE VOYAGE</div>
 

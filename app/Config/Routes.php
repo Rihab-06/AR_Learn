@@ -27,9 +27,21 @@ $routes->get('/dashboard', 'DashboardController::index', ['filter' => 'auth']);
 $routes->get('/logout', 'DashboardController::logout');
 
 /*================================================================
-==============USER ROUTES WITH AUTHENTICATION=====================
+==============ADMIN ROUTES WITH AUTHENTICATION=====================
 ==================================================================*/
 // Route pour le dashboard admin
-$routes->get('/admin_dash', 'AdminController::dashboard', ['filter' => 'auth:admin']);
-// Route de déconnexion admin
+$routes->get('/admin_dash', 'AdminController::dashboard', ['filter' => 'auth:admin']); 
+// Route pour la liste des utilisateurs
+$routes->get('/admin/users', 'AdminController::listUsers');
+$routes->get('/admin/users/delete/(:num)', 'AdminController::deleteUser/$1');
+    // Route de déconnexion admin
 $routes->get('/admin_logout', 'AdminController::logout');
+   // editer un utilisateur
+$routes->get('/admin/users/edit/(:num)', 'AdminController::editUser/$1');
+   // update un utilisateur
+$routes->post('/admin/users/update/(:num)', 'AdminController::updateUser/$1');
+
+
+
+
+
