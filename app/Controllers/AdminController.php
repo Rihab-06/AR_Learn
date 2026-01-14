@@ -21,14 +21,16 @@ class AdminController extends BaseController
     }
         // Charger le modèle
         $utilisateurModel = new UtilisateurModel();
-        
+        $categorieModel = new CategorieModel();
         // Récupérer les statistiques
         // cette ligne sert a compter seulement les utlisateurs est non pas les admins dans le cas ou on veut ajouter plus qu'un admin
         $totalUsers = $utilisateurModel->where('role !=', 'admin')->countAllResults();
+        $totalCategories = $categorieModel->where('parent_id', null)->countAllResults();
+        
 
         $data = [
             'totalUsers' => $totalUsers ?? 0,
-            'totalCategories' => 0,  // À compléter plus tard
+            'totalCategories' => $totalCategories ?? 0,
             'totalTests' => 0        // À compléter plus tard
         ];
         
@@ -50,12 +52,13 @@ class AdminController extends BaseController
         $data["utilisateur"] = $utilisateur->findAll();
         return view("/admin/manag-users/index", $data);
     }
+        //supprimer un utilisateur
     public function deleteUser($id){
         $utilisateur = new UtilisateurModel();
         $utilisateur->delete($id);
         return redirect()->to('/admin/users');
     }
-    
+        //editer un utilisateur
     /*On va chercher dans la base de données les informations de l'utilisateur avec l'ID demandé
     -On les stocke dans $data["user"]
     -On affiche la vue (le formulaire) avec ces informations pré-remplies
@@ -141,13 +144,217 @@ class AdminController extends BaseController
 }
 
 
-        //ajouter un utilisateur
-    public function addUser(){
+        // liste de categories
+    public function listCategories(){
+    $categories = new CategorieModel();
+        // $data["categories"] = $categories->findAll();
+        $data["categories"] = $categories->where('parent_id', null)->findAll();
+        return view("/admin/manag-categories/index", $data);
+    }
+        // supprimer une categorie
+    public function deleteCategories($id){
+        $categories = new CategorieModel();
+        $categories->delete($id);
+        return redirect()->to('/admin/categories');
+    }
 
+    public function addCategories(){
+        $categories = new CategorieModel();
+        $data["categories"] = $categories->where('parent_id', null)->findAll();
+        return view("/admin/manag-categories/categories-creation", $data);
+    }
+
+    public function storeCategories()
+{
+    // Validation
+    $validation = $this->validate([
+        'nom' => 'required|min_length[3]|max_length[50]'
+    ], [
+        'nom' => [
+            'required' => 'Le nom est obligatoire',
+            'min_length' => 'Le nom doit contenir au moins 3 caractères',
+            'max_length' => 'Le nom ne peut pas dépasser 50 caractères'
+        ]
+    ]);
+    
+    if (!$validation) {
+        return redirect()->back()
+                    ->withInput()
+                    ->with('errors', $this->validator->getErrors());
     }
     
     
+    $data = [
+        'nom' => trim($this->request->getPost('nom')),
+        'explication' => trim($this->request->getPost('explication')),
+    ];
+    
+    // Sauvegarde
+    $categorieModel = new CategorieModel();
+    
+    if ($categorieModel->save($data)) {
+        return redirect()->to('/admin/categories')->with('success', 'Catégorie créée avec succès.');
+    } 
 
-     
-
+    else {
+        return redirect()->back()->withInput()->with('error', 'Erreur lors de la création de la catégorie.');
+    }
 }
+         // editer une categorie 
+    
+    public function editCategories($id){
+        $category = new CategorieModel();
+        $data["category"] = $category->find($id);
+        return view("/admin/manag-categories/categories-modification", $data);
+    }
+        // mettre a jour une categorie
+    public function updateCategories($id){
+        // Validation avec règles adaptées pour la MODIFICATION
+    $validation = $this->validate([
+        'nom' => 'required|min_length[3]|max_length[50]',
+    ],
+    [
+        'nom' => [
+            'required' => 'Le nom est obligatoire',
+            'min_length' => 'Le nom doit contenir au moins 3 caractères',
+            'max_length' => 'Le nom ne peut pas dépasser 50 caractères'
+        ] 
+    ]);
+    
+    // Si validation échoue, retour avec erreurs
+    if(!$validation) {
+        return redirect()->back()
+                    ->withInput()
+                    ->with('errors', $this->validator->getErrors());
+    }
+    
+    // Préparer les données de base (toujours modifiées)
+    $data = [
+        'nom' => $this->request->getPost('nom'),
+        'explication' => $this->request->getPost('explication')
+    ];
+     // Mettre à jour dans la base de données
+    $category = new CategorieModel();
+    $category->update($id, $data);
+    
+    // Redirection avec message de succès
+    return redirect()->to('/admin/categories')
+                     ->with('success', 'Catégorie modifiée avec succès');
+    }
+    
+    public function viewCategories($id){
+        $categories = new CategorieModel();
+        // $data["categories"] = $categories->findAll();
+        $data["parentCategory"] = $categories->find($id);
+        $data["categories"] = $categories->where('parent_id', $id)->findAll();
+        
+        return view("/admin/manag-categories/categories-information", $data);
+    }
+
+    public function addSousCategories($id){
+        $categories = new CategorieModel();
+        $data["parentCategory"] = $categories->find($id);
+        $data["categories"] = $categories->where('parent_id', null)->findAll();
+        
+        return view("/admin/manag-categories/sous-categories-creation", $data);
+    }
+
+    public function storeSousCategories()
+{
+    // Validation
+    $validation = $this->validate([
+        'nom' => 'required|min_length[3]|max_length[50]'
+    ], [
+        'nom' => [
+            'required' => 'Le nom est obligatoire',
+            'min_length' => 'Le nom doit contenir au moins 3 caractères',
+            'max_length' => 'Le nom ne peut pas dépasser 50 caractères'
+        ]
+    ]);
+    
+    if (!$validation) {
+        return redirect()->back()
+                    ->withInput()
+                    ->with('errors', $this->validator->getErrors());
+    }
+    
+    // Préparation des données
+    $parentId = $this->request->getPost('parent_id');
+    
+    $data = [
+        'nom' => trim($this->request->getPost('nom')),
+        'explication' => trim($this->request->getPost('explication')),
+        'parent_id' => !empty($parentId) ? $parentId : null,
+    ];
+    
+    // Sauvegarde
+    $categorieModel = new CategorieModel();
+    
+    if ($categorieModel->save($data)) {
+        return redirect()->to('/admin/categories/view/' . $data['parent_id'])->with('success', 'Catégorie créée avec succès.');
+    } 
+    else {
+        return redirect()->back()->withInput()->with('error', 'Erreur lors de la création de la catégorie.');
+    }
+}
+        public function deleteSousCategories($id){
+        $categories = new CategorieModel();
+        $categories->delete($id);
+        return redirect()->back();
+    }
+
+        // editer une categorie 
+    
+    public function editSousCategories($id){
+        $category = new CategorieModel();
+        
+        $data["category"] = $category->find($id);
+        $data["categories"] = $category->where('parent_id', null)->findAll();
+        return view("/admin/manag-categories/sous-categories-modification", $data);
+    }
+        // mettre a jour une categorie
+    public function updateSousCategories($id){
+        // Validation avec règles adaptées pour la MODIFICATION
+        $validation = $this->validate([
+            'nom' => 'required|min_length[3]|max_length[50]',
+            ],
+    [
+        'nom' => [
+            'required' => 'Le nom est obligatoire',
+            'min_length' => 'Le nom doit contenir au moins 3 caractères',
+            'max_length' => 'Le nom ne peut pas dépasser 50 caractères'
+        ] 
+        ]);
+    
+    // Si validation échoue, retour avec erreurs
+    if(!$validation) {
+        return redirect()->back()
+                    ->withInput()
+                    ->with('errors', $this->validator->getErrors());
+    }
+    
+    // Préparer les données de base (toujours modifiées)
+    $data = [
+        'nom' => $this->request->getPost('nom'),
+        'explication' => $this->request->getPost('explication')
+    ];
+    $parent_id = $this->request->getPost('parent_id');
+     // Ajouter parent_id SEULEMENT si fournie
+     if (!empty($parent_id)) {
+         $data['parent_id'] = $parent_id;
+         }
+         // Mettre à jour dans la base de données
+         $category = new CategorieModel();
+         $category->update($id, $data);
+         $data["parentCategory"] = $category->find($id);
+    
+    
+    // Redirection avec message de succès
+     return redirect()->to('/admin/categories/view/'.$parent_id)->with('success', 'Catégorie modifiée avec succès');
+     }
+}
+        
+
+    
+
+    

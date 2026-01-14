@@ -7,12 +7,25 @@ use CodeIgniter\Model;
 class TestModel extends Model
 {
     protected $table            = 'tests';
-    protected $primaryKey       = 'id';
+    protected $primaryKey       = 'id_test';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = [
+        'titre',
+        'description',
+        'categorie_id',
+        'createur_id',
+        'duree_minutes',
+        'num_questions',
+        'difficulty-level',
+        'melange_questions',
+        'afficher_correction',
+        'actif',
+        'created_at',
+        'updated_at',
+    ];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

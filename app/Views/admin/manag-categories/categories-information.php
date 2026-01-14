@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Utilisateurs - AR_Learn</title>
+    <title>Gestion des Catégories - AR_Learn</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -38,17 +38,13 @@
             border: 1px solid rgba(143, 171, 212, 0.15);
         }
 
-         .logo-section {
+        .logo-section {
             display: flex;
             align-items: center;
             gap: 15px;
-            
-            /* Container arrondi avec fond subtil */
             padding: 8px 20px;
             background: rgba(143, 171, 212, 0.12);
             border-radius: 15px;
-            
-            /* Animation douce au hover */
             transition: all 0.3s ease;
             cursor: pointer;
         }
@@ -59,18 +55,13 @@
             box-shadow: 0 5px 20px rgba(143, 171, 212, 0.2);
         }
 
-         .logo-img {
+        .logo-img {
             width: 45px;
             height: 45px;
             object-fit: contain;
-            /* agrandit l'image */
             transform: scale(2.7);
-            
-            
-            /* Effet de lueur autour du logo */
             filter: drop-shadow(0 0 12px rgba(143, 171, 212, 0.6));
             transition: filter 0.3s;
-
         }
 
         .logo-section:hover .logo-img {
@@ -81,15 +72,11 @@
             font-size: 26px;
             font-weight: 700;
             letter-spacing: 2.5px;
-            
-            /* Gradient de texte élégant */
             background: linear-gradient(135deg, #8FABD4, #EFECE3, #8FABD4);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            
-            /* Animation du gradient */
             animation: gradient-shift 3s ease infinite;
         }
 
@@ -98,14 +85,13 @@
             50% { background-position: 100% center; }
         }
 
-
         .header-actions {
             display: flex;
             gap: 15px;
             align-items: center;
         }
 
-        .back-btn, .logout-btn {
+        .back-btn, .add-btn {
             background: linear-gradient(to right, #0a0f47ff, #6263b7ff);
             color: white;
             padding: 10px 20px;
@@ -119,9 +105,17 @@
             display: inline-block;
         }
 
-        .back-btn:hover, .logout-btn:hover {
+        .back-btn:hover, .add-btn:hover {
             background: linear-gradient(to right, #6263b7ff, #0a0f47ff);
             transform: translateY(-1px);
+        }
+
+        .add-btn {
+            background: linear-gradient(to right, #10b981, #059669);
+        }
+
+        .add-btn:hover {
+            background: linear-gradient(to right, #059669, #10b981);
         }
 
         /* ========== PAGE TITLE ========== */
@@ -134,7 +128,7 @@
             text-align: center;
         }
 
-        /* ========== SEARCH AND FILTER BAR ========== */
+        /* ========== TOOLBAR ========== */
         .toolbar {
             background: rgba(26, 26, 46, 0.4);
             padding: 25px;
@@ -147,9 +141,7 @@
             align-items: center;
         }
 
-      
-
-        /* ========== USERS TABLE ========== */
+        /* ========== CATEGORIES TABLE ========== */
         .table-container {
             background: rgba(26, 26, 46, 0.4);
             border-radius: 12px;
@@ -200,7 +192,22 @@
         tbody tr:last-child td {
             border-bottom: none;
         }
-        
+
+        /* ========== CATEGORY BADGE ========== */
+        .category-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #4A70A9 0%, #8FABD4 100%);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .parent-category {
+            color: #10b981;
+            font-weight: 500;
+        }
 
         /* ========== ACTION BUTTONS ========== */
         .action-buttons {
@@ -240,45 +247,14 @@
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
         }
 
-        .btn-toggle {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        .btn-view {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
             color: white;
         }
 
-        .btn-toggle:hover {
+        .btn-view:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-        }
-
-        /* ========== PAGINATION ========== */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin-top: 30px;
-            padding: 20px;
-        }
-
-        .pagination a, .pagination span {
-            padding: 10px 16px;
-            background: rgba(26, 26, 46, 0.4);
-            border: 1px solid rgba(143, 171, 212, 0.2);
-            border-radius: 8px;
-            color: #EFECE3;
-            text-decoration: none;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .pagination a:hover {
-            background: rgba(74, 112, 169, 0.3);
-            border-color: #4A70A9;
-        }
-
-        .pagination .active {
-            background: linear-gradient(135deg, #4A70A9 0%, #8FABD4 100%);
-            border-color: #4A70A9;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
         }
 
         /* ========== EMPTY STATE ========== */
@@ -344,6 +320,7 @@
             .header-actions {
                 width: 100%;
                 justify-content: center;
+                flex-wrap: wrap;
             }
 
             .page-title {
@@ -352,10 +329,6 @@
 
             .toolbar {
                 flex-direction: column;
-            }
-
-            .search-box {
-                width: 100%;
             }
 
             .table-wrapper {
@@ -378,62 +351,65 @@
     <div class="container">
         <!-- HEADER -->
         <div class="header">
-            <!-- Logo et nom de l'application -->
             <div class="logo-section">
                 <img src="<?= base_url('assets/images/logo-app.png') ?>" 
-                 alt="AR_Learn Logo" 
-                 class="logo-img">
-            <span class="logo-text">AR_Learn</span>
+                     alt="AR_Learn Logo" 
+                     class="logo-img">
+                <span class="logo-text">AR_Learn</span>
             </div>
             <div class="header-actions">
-                <a href="<?= base_url('/admin_dash') ?>" class="back-btn">← Retour au Dashboard</a>
-                
+                <a href="<?= base_url('/admin/categories') ?>" class="back-btn">← Retour</a>
+                <a href="<?= base_url('/admin/sous-categories/create/'.$parentCategory['id_categorie']) ?>" class="add-btn">+ Nouvelle Sous Catégorie</a>
             </div>
         </div>
 
         <!-- PAGE TITLE -->
-        <h1 class="page-title">Gestion des Utilisateurs</h1>
+        <h1 class="page-title">Gestion des Sous Catégories</h1>
 
-        <!-- faire la barre de recherche et de filtre s'il reste du temps  -->
-        <div class="toolbar"></div>
+        <!-- TOOLBAR (filtres optionnels) -->
+        <div class="toolbar">
+            <p style="color: #8FABD4;">Nombre total de sous catégories: <strong><?= isset($categories) ? count($categories) : 0 ?></strong></p>
+        </div>
 
-        <!-- USERS TABLE -->
+        <!-- CATEGORIES TABLE -->
         <div class="table-container">
             <div class="table-wrapper">
-                <?php if (!empty($utilisateur) && is_array($utilisateur)): ?>
-                <table id="usersTable">
+                <?php if (!empty($categories) && is_array($categories)): ?>
+                <table id="categoriesTable">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Nom complet</th>
-                            <th>Email</th>
-                            <th>Date d'inscription</th>
-                            <th>Derniere mise a jour </th>
+                            <th>#</th>
+                            <th>Nom de la Sous Catégorie</th>
+                            <th>Explication</th>
+                            <th>Catégorie Parente</th>
+                            <th>Date de Création</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $i=1; ?>
-                        <?php foreach ($utilisateur as $user): ?>
-                        <?php if ($user["role"] == "admin"): ?>
-                        <?php continue; // Skip admin users ?>
-                        <?php endif; ?>
+                        <?php $i = 1; ?>
+                        <?php foreach ($categories as $category): ?>
                         <tr>
-
                             <td><?= $i ?></td>
-                            <td><?= $user['nom'] ?> <?= $user['prenom'] ?></td>
-                            <td><?= $user['email']?></td>
-                            <td><?= date('d/m/Y', strtotime($user['created_at'])) ?></td>
-                            <td><?= date('d/m/Y', strtotime($user['updated_at'])) ?></td>
-
+                            <td>
+                                <span class="category-badge">
+                                    📁 <?= esc($category['nom']) ?>
+                                </span>
+                            </td>
+                            <td><?= esc($category['explication'] ?? 'Aucune explication') ?></td>
+                            <td>
+                                <?= $parentCategory['nom'] ?>
+                            </td>
+                            <td><?= date('d/m/Y', strtotime($category['created_at'])) ?></td>
                             <td>
                                 <div class="action-buttons">
-                                    <a href="<?= base_url('/admin/users/edit/' . $user['id_utilisateur']) ?>" class="btn-action btn-edit">
+                                    <a href="<?= base_url('/admin/sous-categories/edit/' . $category['id_categorie']) ?>" 
+                                       class="btn-action btn-edit">
                                         ✏️ Modifier
                                     </a>
-                                    <a href="<?= base_url('/admin/users/delete/' . $user['id_utilisateur']) ?>" 
+                                    <a href="<?= base_url('/admin/sous-categories/delete/' . $category['id_categorie']) ?>" 
                                        class="btn-action btn-delete"
-                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.')">
+                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette sous catégorie ? Cette action est irréversible.')">
                                         🗑️ Supprimer
                                     </a>
                                 </div>
@@ -445,20 +421,18 @@
                 </table>
                 <?php else: ?>
                 <div class="empty-state">
-                    <div class="empty-state-icon">👥</div>
-                    <h3>Aucun utilisateur trouvé</h3>
-                    <p>Il n'y a actuellement aucun utilisateur dans le système.</p>
+                    <div class="empty-state-icon">📁</div>
+                    <h3>Aucune sous catégorie trouvée</h3>
+                    <p>Commencez par créer votre première sous catégorie de contenu.</p>
+                    <br>
+                    <a href="<?= base_url('/admin/sous-categories/create/'.$parentCategory['id_categorie']) ?>" class="add-btn">
+                        + Créer une la sous-catégorie
+                    </a>
                 </div>
                 <?php endif; ?>
             </div>
         </div>
 
-        <!-- PAGINATION (optionnel) -->
-        <?php if (isset($pager)): ?>
-        <div class="pagination">
-            <?= $pager->links() ?>
-        </div>
-        <?php endif; ?>
     </div>
 
 </body>
