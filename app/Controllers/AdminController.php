@@ -11,12 +11,9 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class AdminController extends BaseController
 {
-        public function dashboard()
-    {
+        public function dashboard() {
        $session = session();
-    
-    
-    if(!$session->get('isLoggedIn') || $session->get('role') !== 'admin'){
+        if(!$session->get('isLoggedIn') || $session->get('role') !== 'admin'){
         return redirect()->to('/')->with('error', 'Accès refusé.');
     }
         // Charger le modèle
@@ -209,7 +206,7 @@ class AdminController extends BaseController
     }
         // mettre a jour une categorie
     public function updateCategories($id){
-        // Validation avec règles adaptées pour la MODIFICATION
+     // Validation avec règles adaptées pour la MODIFICATION
     $validation = $this->validate([
         'nom' => 'required|min_length[3]|max_length[50]',
     ],
@@ -352,6 +349,168 @@ class AdminController extends BaseController
     // Redirection avec message de succès
      return redirect()->to('/admin/categories/view/'.$parent_id)->with('success', 'Catégorie modifiée avec succès');
      }
+    // Les methodes de la gestion des parametres de l'admin
+    public function manageSettings(){
+        
+        $utilisateur = new UtilisateurModel();
+        $data["utilisateur"] = $utilisateur->where('role', 'admin')->findAll();
+        
+        return view("/admin/manag-settings/index", $data);
+    }
+    public function addAdmin(){
+        $adminModel = new UtilisateurModel();
+        $data["admin"] = $adminModel->where('role', 'admin')->findAll();
+        return view("/admin/manag-settings/admin-creation", $data);
+    }
+
+    public function storeAdmin(){
+        $validation = $this->validate([
+            'nom' => 'required|min_length[3]|max_length[50]',
+            'prenom' => 'required|min_length[3]|max_length[50]',
+            'date_naissance' => 'valid_date',
+            'email' => 'required|valid_email|is_unique[utilisateurs.email]',
+            'password' => 'required|min_length[8]',
+            'confirm_password' => 'matches[password]'
+        ],
+        [
+         // Messages personnalisés pour chaque champ
+        'nom' => [
+            'required' => 'Le nom est obligatoire',
+            'min_length' => 'Le nom doit contenir au moins 3 caractères',
+            'max_length' => 'Le nom ne peut pas dépasser 50 caractères'
+        ],
+        'prenom' => [
+            'required' => 'Le prénom est obligatoire',
+            'min_length' => 'Le prénom doit contenir au moins 3 caractères',
+            'max_length' => 'Le prénom ne peut pas dépasser 50 caractères'
+        ],
+        'date_naissance' => [
+            'required' => 'La date de naissance est obligatoire',
+            'valid_date' => 'La date de naissance n\'est pas valide'
+        ],
+        'email' => [
+            'required' => 'L\'email est obligatoire',
+            'valid_email' => 'Veuillez entrer une adresse email valide',
+            'is_unique' => 'Cet email est déjà utilisé. Veuillez en choisir un autre.'
+        ],
+        'password' => [
+            'required' => 'Le mot de passe est obligatoire',
+            'min_length' => 'Le mot de passe doit contenir au moins 8 caractères'
+        ],
+        'confirm_password' => [
+            'required' => 'La confirmation du mot de passe est obligatoire',
+            'matches' => 'Les mots de passe ne correspondent pas'
+        ]
+        ]);
+        
+        if(!$validation) {
+            return redirect()->back()
+                        ->withInput()
+                        ->with('errors', $this->validator->getErrors());
+        } 
+        
+        $data = [    
+            //dataBase fields = .....->getPost('form field name(aka input name )')
+            'nom' => $this->request->getPost('nom'),
+            'prenom' => $this->request->getPost('prenom'),
+            'date_naissance' => $this->request->getPost('date_naissance'),
+            'email' => $this->request->getPost('email'),
+            'password' => password_hash($this->request->getPost('password'), PASSWORD_BCRYPT),
+            'role' => 'admin'
+            
+        ];
+
+
+        $admin = new UtilisateurModel();
+        $admin->save($data);
+
+        return redirect()->to('/admin/settings')->with('success', 'Nouvel administrateur ajouté avec succès');
+        }
+ public function editAdmin($id){
+        $admin = new UtilisateurModel();
+        //récupère les données de l'utilisateur
+        $data["admin"] = $admin->find($id);
+        // passer les données à la vue dans la partie {$data}
+        return view("/admin/manag-settings/admin-modification", $data);
+    }
+
+    /* Mais maintenant ici dans cette fonction **update** on va faire l'action de la 
+    mise a jour dans la db*/
+
+   public function updateAdmin($id){
+    // Validation avec règles adaptées pour la MODIFICATION
+    $validation = $this->validate([
+        'nom' => 'required|min_length[3]|max_length[50]',
+        'prenom' => 'required|min_length[3]|max_length[50]',
+        'date_naissance' => 'permit_empty|valid_date',
+        'email' => "required|valid_email|is_unique[utilisateurs.email,id_utilisateur,{$id}]",
+        'password' => 'permit_empty|min_length[8]',
+    ],
+    [
+        'nom' => [
+            'required' => 'Le nom est obligatoire',
+            'min_length' => 'Le nom doit contenir au moins 3 caractères',
+            'max_length' => 'Le nom ne peut pas dépasser 50 caractères'
+        ],
+        'prenom' => [
+            'required' => 'Le prénom est obligatoire',
+            'min_length' => 'Le prénom doit contenir au moins 3 caractères',
+            'max_length' => 'Le prénom ne peut pas dépasser 50 caractères'
+        ],
+        'date_naissance' => [
+            'valid_date' => 'La date de naissance n\'est pas valide'
+        ],
+        'email' => [
+            'required' => 'L\'email est obligatoire',
+            'valid_email' => 'Veuillez entrer une adresse email valide',
+            'is_unique' => 'Cet email est déjà utilisé par un autre utilisateur'
+        ],
+        'password' => [
+            'min_length' => 'Le mot de passe doit contenir au moins 8 caractères'
+        ]    
+    ]);
+    
+    // Si validation échoue, retour avec erreurs
+    if(!$validation) {
+        return redirect()->back()
+                    ->withInput()
+                    ->with('errors', $this->validator->getErrors());
+    }
+    
+    // Préparer les données de base (toujours modifiées)
+    $data = [
+        'nom' => $this->request->getPost('nom'),
+        'prenom' => $this->request->getPost('prenom'),
+        'email' => $this->request->getPost('email')
+    ];
+    
+    // Ajouter date_naissance SEULEMENT si fournie
+    $dateNaissance = $this->request->getPost('date_naissance');
+    if (!empty($dateNaissance)) {
+        $data['date_naissance'] = $dateNaissance;
+    }
+    
+    // Ajouter password SEULEMENT s'il est fourni et hashé
+    $password = $this->request->getPost('password');
+    if (!empty($password)) {
+        $data['password'] = password_hash($password, PASSWORD_BCRYPT);
+    }
+    
+    // Mettre à jour dans la base de données
+    $admin = new UtilisateurModel();
+    $admin->update($id, $data);
+    
+    // Redirection avec message de succès
+    return redirect()->to('/admin/settings')
+                     ->with('success', 'Administrateur modifié avec succès');
+}
+
+public function deleteAdmin($id){
+        $admin = new UtilisateurModel();
+        $admin->delete($id);
+        return redirect()->to('/admin/settings');
+    }
+
 }
         
 

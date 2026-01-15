@@ -52,6 +52,14 @@ $routes->group('', ['filter' => 'auth:admin'], function($routes) {
     $routes->get('admin/sous-categories/delete/(:num)', 'AdminController::deleteSousCategories/$1');
     $routes->get('admin/sous-categories/edit/(:num)', 'AdminController::editSousCategories/$1');
     $routes->post('admin/sous-categories/update/(:num)', 'AdminController::updateSousCategories/$1');
+    // ===== GESTION DES PARAMETRES DE L'ADMIN =====
+    $routes->get('admin/settings', 'AdminController::manageSettings');
+    $routes->get('admin/settings/admin/add', 'AdminController::addAdmin');
+    $routes->post('admin/settings/admin/store', 'AdminController::storeAdmin');
+    $routes->get('admin/settings/admin/edit/(:num)', 'AdminController::editAdmin/$1');
+    $routes->post('admin/settings/admin/update/(:num)', 'AdminController::updateAdmin/$1');
+    $routes->get('admin/settings/admin/delete/(:num)', 'AdminController::deleteAdmin/$1');
+
     // Déconnexion
     $routes->get('admin_logout', 'AdminController::logout');
 });
