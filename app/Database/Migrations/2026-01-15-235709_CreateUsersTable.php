@@ -20,49 +20,54 @@ class CreateUsersTable extends Migration
                 'constraint' => '100',
                 'null' => false,
             ],
-             'prenom' => [
+            'prenom' => [
                 'type' => 'VARCHAR',
                 'constraint' => '100',
                 'null' => false,
-             ],
-             'date_naissance' => [
+            ],
+            'date_naissance' => [
                 'type' => 'DATE',
                 'null' => false,
             ],
-             'email' => [
+            'email' => [
                 'type' => 'VARCHAR',
                 'constraint' => '120',
                 'null' => false,
-                
-             ],
-             'password' => [
+            ],
+            'password' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255',
                 'null' => false,
-                ],
-             'role' =>[
+            ],
+            'role' => [
                 'type' => 'ENUM',
-                'constraint' =>['admin', 'utilisateur'],
-                'default' =>'utilisateur',
-             ],
-                'created_at' => [
-                    'type' => 'TIMESTAMP',
-                    'null' => true,
-                    
-                ],
-                'updated_at' => [
-                    'type' => 'TIMESTAMP',
-                    'null' => true,
-                    
-                ],
-             
-            ]);
-            // Maintenant, on va definir la cle primaire 
-            $this->forge->addKey('id_utilisateur',true);
-            // ici, on a les indexes
-            $this->forge->addKey('email');
-            // Maintenant, on cree la table
-            $this->forge->createTable('utilisateurs', true);
+                'constraint' => ['admin', 'utilisateur'],
+                'default' => 'utilisateur',
+            ],
+            // Colonne ajoutée de la structure MySQL
+            'avatar' => [
+                'type' => 'VARCHAR',
+                'constraint' => '255',
+                'null' => true,
+            ],
+            'created_at' => [
+                'type' => 'TIMESTAMP',
+                'null' => true,
+            ],
+            'updated_at' => [
+                'type' => 'TIMESTAMP',
+                'null' => true,
+            ],
+        ]);
+        
+        // Clé primaire
+        $this->forge->addKey('id_utilisateur', true);
+        
+        // Index sur email
+        $this->forge->addKey('email');
+        
+        // Créer la table
+        $this->forge->createTable('utilisateurs', true);
     }
 
     public function down()

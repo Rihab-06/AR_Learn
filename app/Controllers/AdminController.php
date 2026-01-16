@@ -11,20 +11,28 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class AdminController extends BaseController
 {
-        public function dashboard() {
-       $session = session();
+    // Dashboard admin mais avec l'authentification et les statistiques
+        public function dashboard() 
+    {
+        // Récupère la session en cours
+        $session = session();
+        // VÉRIFICATION DE SÉCURITÉ : 
+        // 1. Vérifie si l'utilisateur est connecté
+        // 2. Vérifie si l'utilisateur a le rôle 'admin'
+        // Si une des conditions n'est pas remplie, redirige vers la page d'accueil
         if(!$session->get('isLoggedIn') || $session->get('role') !== 'admin'){
-        return redirect()->to('/')->with('error', 'Accès refusé.');
-    }
-        // Charger le modèle
+        return redirect()->to('/')->with('error', 'Accès refusé.');}   
+        // CHARGEMENT DES MODÈLES :
+        // - UtilisateurModel pour gérer les utilisateurs
+        // - CategorieModel pour gérer les catégories
         $utilisateurModel = new UtilisateurModel();
         $categorieModel = new CategorieModel();
         // Récupérer les statistiques
         // cette ligne sert a compter seulement les utlisateurs est non pas les admins dans le cas ou on veut ajouter plus qu'un admin
         $totalUsers = $utilisateurModel->where('role !=', 'admin')->countAllResults();
         $totalCategories = $categorieModel->where('parent_id', null)->countAllResults();
-        
-
+        // PRÉPARATION DES DONNÉES POUR LA VUE
+        // On organise toutes les statistiques dans un tableau
         $data = [
             'totalUsers' => $totalUsers ?? 0,
             'totalCategories' => $totalCategories ?? 0,
@@ -39,12 +47,19 @@ class AdminController extends BaseController
     public function logout()
     {
         $session = session();
+        // DÉCONNEXION :
+        // 1. Détruit toutes les données de session
+        // 2. Efface l'information "utilisateur connecté"
         $session->destroy();
         return redirect()->to('/');
     }
-    // Les methodes de la gestion des utilisateurs
-        //lister les utilisateurs
+
+    /*===================================
+    ===== GESTION DES UTILISATEURS ======
+    =====================================*/
+    //lister les utilisateurs
     public function listUsers(){
+        //instancier le model
         $utilisateur = new UtilisateurModel();
         $data["utilisateur"] = $utilisateur->findAll();
         return view("/admin/manag-users/index", $data);

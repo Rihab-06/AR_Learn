@@ -9,35 +9,25 @@ class CreateQuestionsTable extends Migration
     public function up()
     {
         $this->forge->addField([
-            'id_question' => [
+            'id' => [
                 'type' => 'INT',
                 'constraint' => 11,
                 'unsigned' => true,
                 'auto_increment' => true,
             ],
-            'test_id' => [
+            'quiz_id' => [
                 'type' => 'INT',
                 'constraint' => 11,
                 'unsigned' => true,
+                'null' => false,
             ],
-            'texte_question' => [
+            'question_text' => [
                 'type' => 'TEXT',
                 'null' => false,
             ],
-            'explication' => [
-                'type' => 'TEXT',
-                'comment' => 'Explication de la bonne reponse ',
-                'null' => true,
-            ],
-            'point' => [
+            'order_num' => [
                 'type' => 'INT',
-                'constraint' => 11,
-                'default' => 1,
-            ],
-            'ordre' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'null' => false,
+                'default' => 0,
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -48,19 +38,15 @@ class CreateQuestionsTable extends Migration
                 'null' => true,
             ],
         ]);
-        $this->forge->addKey('id_question', true);
-        $this->forge->addKey('test_id');
-        $this->forge->addForeignKey(
-            'test_id', //colonne locale 
-            'tests', // la table de reference 
-            'id_test',  //la colonne de reference 
-            'CASCADE', // action on delete 
-            'CASCADE' // action on update 
-        );
-        $this->forge->createTable('questions');
-
+        
+        $this->forge->addKey('id', true);
+        $this->forge->addKey('quiz_id');
+        
+        $this->forge->addForeignKey('quiz_id', 'quizzes', 'id', 'CASCADE', 'CASCADE');
+        
+        $this->forge->createTable('questions', true);
     }
-
+    
     public function down()
     {
         $this->forge->dropTable('questions');
