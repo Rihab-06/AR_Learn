@@ -4,27 +4,18 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class TestModel extends Model
+class AnswerModel extends Model
 {
-    protected $table            = 'tests';
-    protected $primaryKey       = 'id_test';
+    protected $table            = 'answers';
+    protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'titre',
-        'description',
-        'categorie_id',
-        'createur_id',
-        'duree_minutes',
-        'num_questions',
-        'difficulty-level',
-        'melange_questions',
-        'afficher_correction',
-        'actif',
-        'created_at',
-        'updated_at',
+        'question_id',
+        'answer_text',
+        'is_correct'
     ];
 
     protected bool $allowEmptyInserts = false;

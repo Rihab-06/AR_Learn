@@ -4,15 +4,23 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class HistoriqueModel extends Model
+class ThemeModel extends Model
 {
-    protected $table            = 'historiques';
+    protected $table            = 'themes';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = [
+        'id_categorie',
+        'name',
+        'slug',
+        'description',
+        'icon',
+        'difficulty',
+        'is_active'
+    ];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

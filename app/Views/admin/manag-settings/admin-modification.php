@@ -287,7 +287,7 @@
                  class="logo-img">
                 <span class="logo-text">AR_Learn</span>
             </div>
-            <a href="<?= base_url('/admin/setting') ?>" class="back-btn">← Retour</a>
+            <a href="<?= base_url('/admin/settings') ?>" class="back-btn">← Retour</a>
         </div>
 
         <!-- PAGE TITLE -->
@@ -355,7 +355,7 @@
 
                 <!-- Form Actions -->
                 <div class="form-actions">
-                    <a href="<?= base_url('/admin/setting')?>" class="btn-cancel">Annuler</a>
+                    <a href="<?= base_url('/admin/settings')?>" class="btn-cancel">Annuler</a>
                     <button type="submit" class="btn-submit">💾 Enregistrer les modifications</button>
                 </div>
             </form>

@@ -468,8 +468,8 @@
 
             <!-- Carte : Total des tests -->
             <div class="stat-card">
-                <h3>Total Tests</h3>
-                <div class="number"><?= $totalTests ?? 0 ?></div>
+                <h3>Total des Admins</h3>
+                <div class="number"><?= $totalAdmins ?? 0 ?></div>
             </div>
         </div>
 
@@ -491,13 +491,6 @@
                 <span class="icon">📁</span>
                 <h2>Gérer les Catégories</h2>
                 <p>Créer, organiser et supprimer les catégories de quiz</p>
-            </a>
-
-            <!-- Bouton : Gestion des tests -->
-            <a href="<?= base_url('/admin/tests') ?>" class="action-btn">
-                <span class="icon">📝</span>
-                <h2>Gérer les Tests</h2>
-                <p>Réviser, valider et supprimer les tests créés</p>
             </a>
         </div>
     </div>

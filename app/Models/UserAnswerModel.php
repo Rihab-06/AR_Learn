@@ -4,22 +4,20 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class CategorieModel extends Model
+class UserAnswerModel extends Model
 {
-    protected $table            = 'categories';
-    protected $primaryKey       = 'id_categorie';
+    protected $table            = 'useranswers';
+    protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'nom',
-        'explication',
-        'parent_id',
-        'slug',
-        'icon',
-        'color',
-        'is_active'
+        'attempt_id',
+        'question_id',
+        'answer_id',
+        'is_correct',
+        'answered_at'
     ];
 
     protected bool $allowEmptyInserts = false;
@@ -29,10 +27,10 @@ class CategorieModel extends Model
     protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = true;
+    protected $useTimestamps = false;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
-    protected $updatedField  = '';
+    protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
 
     // Validation
@@ -52,4 +50,5 @@ class CategorieModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+     
 }

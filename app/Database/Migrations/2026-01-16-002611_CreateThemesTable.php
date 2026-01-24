@@ -15,7 +15,7 @@ class CreateThemesTable extends Migration
                 'unsigned' => true,
                 'auto_increment' => true,
             ],
-            'id_categorie' => [  // ✅ CHANGÉ : category_id → id_categorie
+            'id_categorie' => [ 
                 'type' => 'INT',
                 'constraint' => 11,
                 'unsigned' => true,

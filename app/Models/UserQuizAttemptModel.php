@@ -4,15 +4,23 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class ReponseUtilisateurModel extends Model
+class UserQuizAttemptModel extends Model
 {
-    protected $table            = 'reponseutilisateurs';
+    protected $table            = 'userquizattempts';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = [
+        'id_utilisateur',
+        'id_quiz',
+        'score',
+        'total_questions',
+        'percentage',
+        'started_at',
+        'completed_at'
+    ];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

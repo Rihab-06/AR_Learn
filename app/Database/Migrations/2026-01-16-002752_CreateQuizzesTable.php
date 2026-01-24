@@ -21,7 +21,7 @@ class CreateQuizzesTable extends Migration
                 'unsigned' => true,
                 'null' => false,
             ],
-            'id_utilisateur' => [  // ✅ CHANGÉ : user_id → id_utilisateur
+            'id_utilisateur' => [  
                 'type' => 'INT',
                 'constraint' => 11,
                 'unsigned' => true,

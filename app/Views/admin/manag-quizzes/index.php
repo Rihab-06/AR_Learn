@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Catégories - AR_Learn</title>
+    <title>Gestion des Quizzes - AR_Learn</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -139,9 +139,26 @@
             gap: 15px;
             flex-wrap: wrap;
             align-items: center;
+            justify-content: space-between;
         }
 
-        /* ========== CATEGORIES TABLE ========== */
+        .theme-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+        }
+
+        /* ========== QUIZZES TABLE ========== */
         .table-container {
             background: rgba(26, 26, 46, 0.4);
             border-radius: 12px;
@@ -193,8 +210,8 @@
             border-bottom: none;
         }
 
-        /* ========== CATEGORY BADGE ========== */
-        .category-badge {
+        /* ========== QUIZ BADGE ========== */
+        .quiz-badge {
             display: inline-block;
             padding: 6px 12px;
             background: linear-gradient(135deg, #4A70A9 0%, #8FABD4 100%);
@@ -204,9 +221,24 @@
             color: white;
         }
 
-        .parent-category {
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-published {
+            background: rgba(16, 185, 129, 0.2);
             color: #10b981;
-            font-weight: 500;
+            border: 1px solid #10b981;
+        }
+
+        .status-draft {
+            background: rgba(251, 146, 60, 0.2);
+            color: #fb923c;
+            border: 1px solid #fb923c;
         }
 
         /* ========== ACTION BUTTONS ========== */
@@ -336,7 +368,7 @@
             }
 
             table {
-                min-width: 800px;
+                min-width: 900px;
             }
 
             .action-buttons {
@@ -357,63 +389,55 @@
                      class="logo-img">
                 <span class="logo-text">AR_Learn</span>
             </div>
-            <div class="header-actions">
-                <a href="<?= base_url('/admin/categories') ?>" class="back-btn">← Retour</a>
-                <a href="<?= base_url('/admin/sous-categories/create/'.$parentCategory['id_categorie']) ?>" class="add-btn">+ Nouvelle Sous Catégorie</a>
-            </div>
         </div>
 
         <!-- PAGE TITLE -->
-        <h1 class="page-title">Gestion des Sous Catégories</h1>
+        <h1 class="page-title">Gestion des Quizzes</h1>
 
-        <!-- TOOLBAR (filtres optionnels) -->
+        <!-- TOOLBAR -->
         <div class="toolbar">
-            <p style="color: #8FABD4;">Nombre total de sous catégories: <strong><?= isset($categories) ? count($categories) : 0 ?></strong></p>
+            <div class="theme-info">
+                <p style="color: #8FABD4;">Thème :</p>
+                <span class="theme-badge">📚 <?= esc($themes['name']) ?></span>
+            </div>
+            <p style="color: #8FABD4;">Nombre total de quizzes : <strong><?= isset($quizzes) ? count($quizzes) : 0 ?></strong></p>
         </div>
 
-        <!-- CATEGORIES TABLE -->
+        <!-- QUIZZES TABLE -->
         <div class="table-container">
             <div class="table-wrapper">
-                <?php if (!empty($categories) && is_array($categories)): ?>
-                <table id="categoriesTable">
+                <?php if (!empty($quizzes) && is_array($quizzes)): ?>
+                <table id="quizzesTable">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Nom de la Sous Catégorie</th>
-                            <th>Explication</th>
-                            <th>Catégorie Parente</th>
+                            <th>Titre du Quiz</th>
+                            <th>Description</th>
                             <th>Date de Création</th>
+                            <th>Dernière Mise à Jour</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php $i = 1; ?>
-                        <?php foreach ($categories as $category): ?>
+                        <?php foreach ($quizzes as $quiz): ?>
                         <tr>
                             <td><?= $i ?></td>
                             <td>
-                                <span class="category-badge">
-                                    📁 <?= esc($category['nom']) ?>
+                                <span class="quiz-badge">
+                                    📝 <?= esc($quiz['title']) ?>
                                 </span>
                             </td>
-                            <td><?= esc($category['explication'] ?? 'Aucune explication') ?></td>
-                            <td>
-                                <?= $parentCategory['nom'] ?>
-                            </td>
-                            <td><?= date('d/m/Y', strtotime($category['created_at'])) ?></td>
+                            <td><?= esc(substr($quiz['description'] ?? 'Aucune description', 0, 100)) ?><?= strlen($quiz['description'] ?? '') > 100 ? '...' : '' ?></td>
+                            
+                            <td><?= $quiz['created_at'] ? date('d/m/Y ', strtotime($quiz['created_at'])) : 'N/A' ?></td>
+                            <td><?= $quiz['updated_at'] ? date('d/m/Y ', strtotime($quiz['updated_at'])) : 'N/A' ?></td>
                             <td>
                                 <div class="action-buttons">
-                                    <a href="<?= base_url('/admin/sous-categories/edit/' . $category['id_categorie']) ?>" 
-                                       class="btn-action btn-edit">
-                                        ✏️ Modifier
-                                    </a>
-                                    <a href="<?= base_url('/admin/theme/' . $category['id_categorie']) ?>" 
-                                       class="btn-action btn-view">
-                                        👁️ Voir
-                                    </a>
-                                    <a href="<?= base_url('/admin/sous-categories/delete/' . $category['id_categorie']) ?>" 
+                                   
+                                    <a href="<?= base_url('/admin/quizzes/delete/' . $quiz['id']) ?>" 
                                        class="btn-action btn-delete"
-                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette sous catégorie ? Cette action est irréversible.')">
+                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce quiz ? Cette action supprimera également toutes les questions associées.')">
                                         🗑️ Supprimer
                                     </a>
                                 </div>
@@ -423,16 +447,6 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                <?php else: ?>
-                <div class="empty-state">
-                    <div class="empty-state-icon">📁</div>
-                    <h3>Aucune sous catégorie trouvée</h3>
-                    <p>Commencez par créer votre première sous catégorie de contenu.</p>
-                    <br>
-                    <a href="<?= base_url('/admin/sous-categories/create/'.$parentCategory['id_categorie']) ?>" class="add-btn">
-                        + Créer une la sous-catégorie
-                    </a>
-                </div>
                 <?php endif; ?>
             </div>
         </div>

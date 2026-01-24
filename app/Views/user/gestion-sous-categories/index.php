@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR_Learn - Tableau de bord</title>
+    <title>AR_Learn - Sous-Catégories</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         /* ========================================
@@ -95,39 +95,27 @@
             0%, 100% { background-position: 0% center; }
             50% { background-position: 100% center; }
         }
-
         
-        .back-btn, .add-btn {
-            background: linear-gradient(to right, #0a0f47ff, #6263b7ff);
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s;
-            display: inline-block;
-        }
-
-        .back-btn:hover, .add-btn:hover {
-            background: linear-gradient(to right, #6263b7ff, #0a0f47ff);
-            transform: translateY(-1px);
-        }
-
-        .add-btn {
-            background: linear-gradient(to right, #10b981, #059669);
-        }
-
-        .add-btn:hover {
-            background: linear-gradient(to right, #059669, #10b981);
-        }
-
-
         /* ========================================
            USER SECTION (Dropdown CSS pur)
         ======================================== */
+        
+        .back-link {
+            display: inline-flex;
+            align-items: left;
+            gap: 8px;
+            color: #0b9659;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            color: #EFECE3;
+            transform: translateX(-5px);
+        }
+
         .user-section {
             position: relative;
         }
@@ -296,6 +284,52 @@
             max-width: 620px;
             margin: 0 auto 40px;
             line-height: 1.6;
+        }
+
+        /* ========================================
+           ACTION BUTTONS (NOUVEAUX BOUTONS)
+        ======================================== */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, #4A70A9, #5c85c4);
+            color: #EFECE3;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 112, 169, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(143, 171, 212, 0.15);
+            color: #8FABD4;
+            border: 1px solid rgba(143, 171, 212, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(143, 171, 212, 0.25);
+            border-color: #8FABD4;
+            transform: translateY(-2px);
         }
 
         /* ========================================
@@ -500,6 +534,16 @@
             .themes-section {
                 padding: 30px 20px 60px;
             }
+
+            /* Boutons en colonne sur mobile */
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -508,6 +552,7 @@
          NAVIGATION BAR
     ======================================== -->
     <nav class="navbar">
+        <!-- Logo de l'application -->
         <div class="logo-section">
             <img src="<?= base_url('assets/images/logo-app.png') ?>" 
                  alt="AR_Learn Logo" 
@@ -515,19 +560,21 @@
             <span class="logo-text">AR_Learn</span>
         </div>
 
-        <div>
-             <a href="<?= base_url('user/categorie/creation') ?>" class="add-btn">+ Nouvelle Categorie</a>
-        </div>
+        <!-- Menu utilisateur (dropdown sans JavaScript) -->
         <div class="user-section">
             <input type="checkbox" id="user-menu-toggle">
-            
             <label for="user-menu-toggle" class="user-button">
                 👤 <?= isset($user) ? esc($user['prenom'] . ' ' . $user['nom']) : 'Utilisateur' ?>
                 <span class="arrow">▼</span>
             </label>
             
             <div class="user-dropdown">
-                
+                <a href="<?= base_url('user/profile') ?>" class="user-dropdown-item">
+                    ✏️ Mon profil
+                </a>
+                <a href="<?= base_url('user/history') ?>" class="user-dropdown-item">
+                    📊 Mon historique
+                </a>
                 <a href="<?= base_url('logout') ?>" class="user-dropdown-item logout-item">
                     🚪 Déconnexion
                 </a>
@@ -536,57 +583,94 @@
     </nav>
 
     <!-- ========================================
-         HERO SECTION
+         HERO SECTION AVEC TITRE ET BOUTONS
     ======================================== -->
     <section class="hero-section">
         <div class="hero-content">
-            <div class="tagline">EMPOWER YOUR MIND</div>
-            <h1 class="hero-title">Master Every Challenge</h1>
+            <!-- Petit texte au-dessus du titre -->
+            <p class="tagline">Explorez les thèmes</p>
+            
+            <!-- Titre principal : nom de la catégorie parent -->
+            <h1 class="hero-title">
+                <?= isset($categorieParent) ? esc($categorieParent['nom']) : 'Sous-catégories' ?>
+            </h1>
+            
+            <!-- Sous-titre : description de la catégorie -->
             <p class="hero-subtitle">
-                Découvrez des quiz interactifs, suivez votre progression et dépassez vos limites avec AR_Learn
+                <?= isset($categorieParent) && !empty($categorieParent['explication']) 
+                    ? esc($categorieParent['explication']) 
+                    : 'Choisissez une sous-catégorie pour commencer votre apprentissage' ?>
             </p>
+
+            <!-- ✅ NOUVEAUX BOUTONS D'ACTION -->
+            <div class="action-buttons">
+                <!-- Bouton 1 : Retour au tableau de bord -->
+                <a href="<?= base_url('dashboard') ?>" class="btn btn-secondary">
+                    ← Retour au tableau de bord
+                </a>
+                
+                <!-- Bouton 2 : Ajouter une sous-catégorie -->
+                <a href="<?= base_url('user/sous-categorie/creation/'. $categorieParent['id_categorie']) ?>" class="btn btn-primary">
+                    ➕ Ajouter une sous-catégorie
+                </a>
+            </div>
         </div>
     </section>
 
     <!-- ========================================
-         THEMES SECTION (Catégories)
+         THEMES SECTION (Liste des sous-catégories)
     ======================================== -->
     <section class="themes-section">
         <div class="cards-grid">
-            
-            <?php if (!empty($categories)): ?>
-                <?php foreach ($categories as $category): ?>
-                    <!-- Carte Catégorie -->
-                    <a href="<?= base_url('/user/categorie/sous-categorie/' . $category['id_categorie']) ?>" 
+
+            <!-- Si des sous-catégories existent -->
+            <?php if (!empty($sousCategories)): ?>
+                
+                <!-- Boucle pour afficher chaque sous-catégorie -->
+                <?php foreach ($sousCategories as $category): ?>
+                    
+                    <!-- Carte cliquable de la sous-catégorie -->
+                    <a href="<?= base_url('/user/categorie/sous-categorie/'.$categorieParent['nom'].'/' . $category['id_categorie']) ?>" 
                        class="quiz-card"
                        style="--card-color: <?= esc($category['color']) ?>; 
                               --card-color-light: <?= esc($category['color']) ?>dd">
-                        
+                        <!-- En-tête de la carte avec l'icône -->
                         <div class="card-header">
                             <span class="card-icon"><?= $category['icon'] ?></span>
                         </div>
                         
+                        <!-- Contenu de la carte -->
                         <div class="card-body">
+                            <!-- Nom de la sous-catégorie -->
                             <h3 class="card-title"><?= esc($category['nom']) ?></h3>
+                            
+                            <!-- Description de la sous-catégorie -->
                             <p class="card-description">
-                                <?= esc($category['explication']) ?>
+                                <?= !empty($category['explication']) 
+                                    ? esc($category['explication']) 
+                                    : 'Découvrez les thèmes de cette catégorie' ?>
                             </p>
+                            
+                            <!-- Pied de carte avec bouton -->
                             <div class="card-footer">
-
                                 <span class="start-btn">Découvrir →</span>
                             </div>
                         </div>
                     </a>
+                    
                 <?php endforeach; ?>
+                
             <?php else: ?>
-                <!-- Aucune catégorie disponible -->
+                
+                <!-- Message si aucune sous-catégorie n'existe -->
                 <div class="no-content">
                     <div class="no-content-icon">📚</div>
                     <p class="no-content-text">
-                        Aucune catégorie de quiz disponible pour le moment.<br>
-                        Revenez bientôt pour découvrir de nouveaux contenus !
+                        Aucune sous-catégorie disponible pour le moment.<br>
+                        Cliquez sur "Ajouter une sous-catégorie" pour en créer une !
                     </p>
                 </div>
+                
             <?php endif; ?>
             
         </div>

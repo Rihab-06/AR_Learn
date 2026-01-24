@@ -4,15 +4,21 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class OptionReponseModel extends Model
+class QuizModel extends Model
 {
-    protected $table            = 'optionreponses';
+    protected $table            = 'quizzes';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = [
+        'theme_id',
+        'id_utilisateur',
+        'title',
+        'description',
+        'is_published'
+    ];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

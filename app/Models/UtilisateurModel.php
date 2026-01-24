@@ -19,6 +19,7 @@ class UtilisateurModel extends Model
         'email',
         'password',
         'role',
+        'avatar'
 
     ];
 

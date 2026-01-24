@@ -25,15 +25,22 @@ class AuthFilter implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        if (!session()->get('isLoggedIn')) {
-            return redirect()->to('/')->with('error', 'Vous devez vous connecter d\'abord');
-        }
-        
-        if ($arguments && in_array('admin', $arguments)) {
-            if (session()->get('role') !== 'admin') {
-                return redirect()->to('/')->with('error', 'Accès refusé');
-            }
-        }
+       // 1. Vérification de l'authentification
+    // On vérifie si la clé 'isLoggedIn' n'existe pas ou est fausse dans la session
+    if (!session()->get('isLoggedIn')) {
+    // Redirige l'utilisateur vers la page d'accueil avec un message d'erreur flash
+    return redirect()->to('/')->with('error', 'Vous devez vous connecter d\'abord');
+}
+
+    // 2. Vérification des droits d'accès (Rôles)
+    // On vérifie si des arguments ont été passés au filtre et si le rôle 'admin' est requis
+    if ($arguments && in_array('admin', $arguments)) {
+    // Si l'utilisateur est connecté mais que son rôle en session n'est pas 'admin'
+     if (session()->get('role') !== 'admin') {
+        // Redirige vers l'accueil avec un message de refus
+        return redirect()->to('/')->with('error', 'Accès refusé');
+    }
+}
     }
 
     /**
